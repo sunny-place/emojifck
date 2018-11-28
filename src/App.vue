@@ -6,35 +6,35 @@
       p.label プログラムをかいてね！
       .pallet
         label.pallet_col
-          span >
+          span みぎの<br>はこへ
           input(v-model="cmd.next")
           button.btn.btn-arw(@click="addChr(cmd.next)") ↓
         label.pallet_col
-          span <
+          span ひだりの<br>はこへ
           input(v-model="cmd.prev")
           button.btn.btn-arw(@click="addChr(cmd.prev)") ↓
         label.pallet_col
-          span +
+          span はこのなかみ<br>＋１
           input(v-model="cmd.inc")
           button.btn.btn-arw(@click="addChr(cmd.inc)") ↓
         label.pallet_col
-          span -
+          span はこのなかみ<br>ー１
           input(v-model="cmd.dec")
           button.btn.btn-arw(@click="addChr(cmd.dec)") ↓
         label.pallet_col
-          span [
+          span くりかえし<br>はじめ
           input(v-model="cmd.begin")
           button.btn.btn-arw(@click="addChr(cmd.begin)") ↓
         label.pallet_col
-          span ]
+          span くりかえし<br>おわり
           input(v-model="cmd.end")
           button.btn.btn-arw(@click="addChr(cmd.end)") ↓
         label.pallet_col
-          span .
+          span はこのなかみ<br>しゅつりょく
           input(v-model="cmd.write")
           button.btn.btn-arw(@click="addChr(cmd.write)") ↓
         label.pallet_col
-          span ,
+          span はこに<br>にゅうりょく
           input(v-model="cmd.read")
           button.btn.btn-arw(@click="addChr(cmd.read)") ↓
       .code
@@ -45,7 +45,7 @@
         p.label
           |にゅうりょく
           br
-          span.small 「,」のたびに1もじずつよみこむよ
+          span.small 「{{cmd.read}}」のたびに1もじずつよみこむよ
           br
           span.small にゅうりょくはasciiコードのはんいしかうけつけないよ！
         textarea.txtArea(v-model="input" rows=5)
@@ -213,11 +213,11 @@ class BrainFxck {
       case "MEMORY_OVER":
         return msg+"ポインタが"+this.mem_ptr+"をさしてるね。メモリは0から"+(this.memLen-1)+"までしか 見られないよ！";
       case "MISSING_BEGIN_BRACKET":
-        return msg+"対応する [ がないよ！"
+        return msg+"対応する " +this.cmd.begin + "がないよ！"
       case "MISSING_END_BRACKET"  :
-        return msg+"対応する ] がないよ！"
+        return msg+"対応する "+this.cmd.end +" がないよ！"
       case "READ_BUFFER_OVER" :
-        return msg+"入力に もうデータがないよ！"
+        return msg+"にゅうりょくに もうデータがないよ！"
       default:
         return msg+"よくわからないけど、なにかエラーがおきたよ！"
     }
@@ -284,10 +284,14 @@ sp(media = 600)
   flex-flow row wrap
   justify-content space-between
   &_col
-    width 10%
+    width 12%
     text-align center
     +sp()
       width 24%
+    span
+      font-size 70%
+      color #F37171
+      font-weight bold
     input
       display block
       width 100%
@@ -309,6 +313,7 @@ sp(media = 600)
   box-sizing border-box
   padding 10px
   border dotted 4px #F37171
+  font-size 150%
 .btn
   display block 
   background-color #fff
@@ -325,6 +330,7 @@ sp(media = 600)
   &-run
     padding 20px
     font-size 120%
+    margin-top 10px
   &-arw
     width 2em
     margin 5px auto
