@@ -1,49 +1,57 @@
 <template lang="pug">
   #app
-    button(@click="exec") RUN
-    //-.bl_txtWrap
-      label.bl_txt
-        span >
-        input(v-model="cmd.next")
-        button(@click="addChr(cmd.next)") ↓
-      label.bl_txt
-        span <
-        input(v-model="cmd.prev")
-        button(@click="addChr(cmd.prev)") ↓
-      label.bl_txt
-        span +
-        input(v-model="cmd.inc")
-        button(@click="addChr(cmd.inc)") ↓
-      label.bl_txt
-        span -
-        input(v-model="cmd.dec")
-        button(@click="addChr(cmd.dec)") ↓
-      label.bl_txt
-        span [
-        input(v-model="cmd.begin")
-        button(@click="addChr(cmd.begin)") ↓
-      label.bl_txt
-        span ]
-        input(v-model="cmd.end")
-        button(@click="addChr(cmd.end)") ↓
-      label.bl_txt
-        span .
-        input(v-model="cmd.write")
-        button(@click="addChr(cmd.write)") ↓
-      label.bl_txt
-        span ,
-        input(v-model="cmd.read")
-        button(@click="addChr(cmd.read)") ↓
-    .bl_txtWrap
-      label.bl_txt
-        span CODE
-        textarea(v-model="code" @keydown="setCodePos" @click="setCodePos")
-      label.bl_txt
-        span INPUT
-        textarea(v-model="input")
-      label.bl_txt
-        span RESULT
-        textarea(v-model="result")
+    .wrapper
+      h1.title
+        img(src="./assets/title.png", alt="")
+      p.label プログラムをかいてね！
+      .pallet
+        label.pallet_col
+          span >
+          input(v-model="cmd.next")
+          button.btn.btn-arw(@click="addChr(cmd.next)") ↓
+        label.pallet_col
+          span <
+          input(v-model="cmd.prev")
+          button.btn.btn-arw(@click="addChr(cmd.prev)") ↓
+        label.pallet_col
+          span +
+          input(v-model="cmd.inc")
+          button.btn.btn-arw(@click="addChr(cmd.inc)") ↓
+        label.pallet_col
+          span -
+          input(v-model="cmd.dec")
+          button.btn.btn-arw(@click="addChr(cmd.dec)") ↓
+        label.pallet_col
+          span [
+          input(v-model="cmd.begin")
+          button.btn.btn-arw(@click="addChr(cmd.begin)") ↓
+        label.pallet_col
+          span ]
+          input(v-model="cmd.end")
+          button.btn.btn-arw(@click="addChr(cmd.end)") ↓
+        label.pallet_col
+          span .
+          input(v-model="cmd.write")
+          button.btn.btn-arw(@click="addChr(cmd.write)") ↓
+        label.pallet_col
+          span ,
+          input(v-model="cmd.read")
+          button.btn.btn-arw(@click="addChr(cmd.read)") ↓
+      .code
+        textarea.txtArea(v-model="code" @keydown="setCodePos" @click="setCodePos" rows=10)
+      button.btn.btn-run(@click="exec") プログラムをうごかす
+
+      .read
+        p.label
+          |にゅうりょく
+          br
+          span.small 「,」のたびに1もじずつよみこむよ
+          br
+          span.small にゅうりょくはasciiコードのはんいしかうけつけないよ！
+        textarea.txtArea(v-model="input" rows=5)
+        p.label
+          |けっかがここにでるよ！
+        textarea.txtArea(v-model="result" rows=5)
     
 </template>
 
@@ -53,7 +61,7 @@ var charCode = [
 "<NUL>","<SOH>","<STX>","<ETX>","<EOT>","<ENQ>","<ACK>","<BEL>","<BS>" ,"<HT>" ,
 "<LF>" ,"<VT>" ,"<FF>" ,"<CR>" ,"<SO>" ,"<SI>" ,"<DLE>","<DC1>","<DC2>","<DC3>",
 "<DC4>","<NAK>","<SYN>","<ETB>","<CAN>","<EM>" ,"<SUB>","<ESC>","<FS>" ,"<GS>" ,
-"<RS>" ,"<US>" ,"<SPC>",  "!"  , "\""  ,  "#"  ,  "$"  ,  "%"  ,  "&"  ,  "'"  ,
+"<RS>" ,"<US>" ,  " "  ,  "!"  , "\""  ,  "#"  ,  "$"  ,  "%"  ,  "&"  ,  "'"  ,
   "("  ,  ")"  ,  "*"  ,  "+"  ,  ","  ,  "-"  ,  "."  ,  "/"  ,  "0"  ,  "1"  ,
   "2"  ,  "3"  ,  "4"  ,  "5"  ,  "6"  ,  "7"  ,  "8"  ,  "9"  ,  ":"  ,  ";"  ,
   "<"  ,  "="  ,  ">"  ,  "?"  ,  "@"  ,  "A"  ,  "B"  ,  "C"  ,  "D"  ,  "E"  ,
@@ -187,7 +195,8 @@ class BrainFxck {
     "(?:"+this.escapeCmd(this.cmd.write)+")|" +
     "(?:"+this.escapeCmd(this.cmd.read)+")" +
     ")",'g');
-    return code.match(regExp);
+    var res = code.match(regExp);
+    return res ? res : [""];
   }
   escapeCmd(val) {
     return (val && /[\\^$.*+?()[\]{}|]/g.test(val)) ? val.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&') : val;
@@ -226,14 +235,14 @@ export default {
       input : "",
       codePos: 0,
       cmd   : {
-        next: ">",
-        prev: "<",
-        inc : "+",
-        dec : "-",
-        begin: "[",
-        end  : "]",
-        write: ".",
-        read : ","
+        next: "🎄",
+        prev: "🦌",
+        inc : "🎅",
+        dec : "🛷",
+        begin: "🍰",
+        end  : "⛄",
+        write: "🎁",
+        read : "🧦"
       }
     }
   },
@@ -247,7 +256,7 @@ export default {
     addChr: function(v) {
       //var pos = document.getElementById('code').selectionStart;
       this.code = this.code.substr(0,this.codePos) + v + this.code.substr(this.codePos, this.code.length);
-      this.codePos += 1;
+      this.codePos += v.length;
     }
   }
 };
@@ -257,19 +266,68 @@ export default {
 
 </script>
 
-<style lang="stylus">
-.bl_txt
-  display block
-  margin 5px
-  span
-    display block
-  input
-    width 30px
-  textarea
-    width 300px
-    min-height 200px
-  button
-    display block
-  &Wrap
-    display flex  
+<style lang="stylus" scoped>
+sp(media = 600)
+  @media screen and (max-width: media px)
+    {block}
+.wrapper
+  max-width 1000px
+  width 100%
+  margin auto
+.title
+  width 50%
+  margin auto
+  img
+    width 100%
+.pallet
+  display flex
+  flex-flow row wrap
+  justify-content space-between
+  &_col
+    width 10%
+    text-align center
+    +sp()
+      width 24%
+    input
+      display block
+      width 100%
+      text-align center
+      border solid 2px #F37171
+      border-radius 10px
+      box-sizing border-box
+      font-size 120%
+.label
+  margin 20px 0 0
+  text-align center
+  color #F37171
+  font-weight bold
+  .small
+    font-size 80%
+.txtArea
+  width 100%
+  resize vertical
+  box-sizing border-box
+  padding 10px
+  border dotted 4px #F37171
+.btn
+  display block 
+  background-color #fff
+  border solid 2px #F37171
+  border-radius 10px
+  width 100%
+  box-sizing border-box
+  color #F37171
+  font-weight bold
+  cursor pointer
+  &:hover
+    background-color #F37171
+    color #fff
+  &-run
+    padding 20px
+    font-size 120%
+  &-arw
+    width 2em
+    margin 5px auto
+    border-radius 20px
+    font-size 120%
 </style>
